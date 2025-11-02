@@ -5,3 +5,5 @@ cmm/data/*
 *.jpg
 *.gz
 *ubyte
+cnn/data/flowers
+cnn/data
