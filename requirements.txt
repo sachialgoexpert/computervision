@@ -4,3 +4,4 @@ kaggle
 kagglehub[pandas-datasets]
 gradio
 torchsummary
+ultralytics
