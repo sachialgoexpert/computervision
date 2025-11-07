@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 import time
 from src.inference import YOLOv11Inference
-from src.utils import save_metadata
+from src.utils import save_metadata,load_metadata,get_unique_classes_counts
 
 ## add project root to the system path
 
@@ -12,7 +12,9 @@ sys.path.append(str(Path(__file__).parent))
 
 def init_session_state():
     session_detaults={
-        "metadata":None
+        "metadata":None,
+        "unique_classes": [],
+        "count_options":{}
     }
 
     for key,value in session_detaults.items():
@@ -46,6 +48,8 @@ if option=="process new image":
                         st.success(f"Processed {len(metadata)} images. Metadata Saved to:")
                         st.code(str(metadata_path))
                         st.session_state.metatdata=metadata
+                        st.session_state.unique_classes,st.session_state.count_options=get_unique_classes_counts(metadata=metadata)
+                        
                 except Exception as e:
                     st.error(f"Error during inference {st.error}")
             else:
@@ -56,8 +60,11 @@ else:
         if st.button("Load Metadata"):
             if metadata_path:
                 try:
-                    time.sleep(3)
-                    st.success("Successfully loaded metadata")
+                    with st.spinner("Loading metadata... "):
+                        metadata=load_metadata(metdata_path=metadata_path)
+                        st.session_state.metatdata=metadata
+                        st.session_state.unique_classes,st.session_state.count_options=get_unique_classes_counts(metadata=metadata)
+                        st.success(f"Successfully loaded metadata for {len(metadata)} images")
                 except Exception as e:
                     st.error(f"Error loading metadta {str(e)}")
             else:
